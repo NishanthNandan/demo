@@ -1,79 +1,83 @@
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to right, #654ea3, #eaafc8);
-  background-color: #2980b9;
+  background: linear-gradient(to right, #b993d6, #8ca6db);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height:100vh;
 }
 
 .container {
-  background: linear-gradient(to right, #fceabb, #f8b500);
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
-  width: 90%;
-  max-width: 500px;
+  background-color: #6c5af2;
+  padding: 80px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  width: 500px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 50px;
+  color: white;
+
 }
 
 .input-group {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
-.input-group input {
+input {
+  flex: 1;
   padding: 8px;
-  width: 100%;
-  border: 1px solid #ccc;
   border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
-.input-group button {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
+button {
   padding: 8px 12px;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  background-color: green;
+  color: white;
+}
+
+#addBtn {
+  background-color: #ff4e50;
+  color: white;
+
 }
 
 .bookmark-item {
-  background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+background-color: whitesmoke;
+  color: black;
   padding: 10px;
-  margin: 10px 0;
   border-radius: 8px;
+  margin-top: 10px;
 }
 
-.bookmark-item p {
-  margin: 5px 0;
+.bookmark-info {
+  flex-grow: 1;
+  color: black;
+  font-weight: bold;
 }
-
-.bookmark-item button {
-  margin-right: 10px;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 
 .visit-btn {
   background-color: #3498db;
   color: white;
-  border: none;
-  padding: 4px 10px;
   margin-right: 5px;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
-
-
 .edit-btn {
-  background-color: #f39c12;
+  background-color: orange;
   color: white;
+  margin-right: 5px;
 }
 
 .remove-btn {

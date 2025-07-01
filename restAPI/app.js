@@ -1,69 +1,87 @@
 const apiUrl = "https://crudcrud.com/api/aa0893dde34f4e83a26770bcd859afdd/bookmarks";
-
-document.addEventListener("DOMContentLoaded", fetchBookmarks);
+let currentEditingId = null;
+window.onload = fetchBookmarks;
 
 function addBookmark() {
-  const name = document.getElementById("bookmarkName").value;
-  const url = document.getElementById("bookmarkURL").value;
-//   const date = new Date().toLocaleDateString();
-
-  if (!name || !url) return alert("Please fill in both fields!");
-
-  const bookmark = { name, url, date };
-
-  fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(bookmark)
-  })
-  .then(res => res.json())
-  .then(() => {
-    document.getElementById("bookmarkName").value = "";
-    document.getElementById("bookmarkURL").value = "";
-    fetchBookmarks();
-  });
+  const name = document.getElementById("bookmarkName").value.trim();
+  const url = document.getElementById("bookmarkURL").value.trim();
+  if (!name || !url) return alert("Please fill both fields.");
+  const bookmark = { name, url };
+  if (currentEditingId) {
+    fetch(`${apiUrl}/${currentEditingId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookmark),
+    })
+      .then(() => {
+        currentEditingId = null;
+        document.getElementById("addBtn").textContent = "Add Bookmark";
+        resetInputs();
+        fetchBookmarks();
+      });
+  } else {
+    fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookmark),
+    })
+      .then(() => {
+        resetInputs();
+        fetchBookmarks();
+      });
+  }
 }
 
 function fetchBookmarks() {
   fetch(apiUrl)
-    .then(res => res.json())
-    .then(data => {
+    .then((res) => res.json())
+    .then((data) => {
       const list = document.getElementById("bookmarkList");
       list.innerHTML = "";
-      data.forEach(bookmark => {
-        const item = document.createElement("div");
-        item.className = "bookmark-item";
-        item.innerHTML = `
-          <p><strong>${bookmark.name}</strong> (${bookmark.url})</p>
-          <a class="visit-btn" href="${bookmark.url}" target="_blank">Visit</a>
-          <button class="edit-btn" onclick="editBookmark('${bookmark._id}', '${bookmark.name}', '${bookmark.url}')">Edit</button>
-          <button class="remove-btn" onclick="removeBookmark('${bookmark._id}')">Remove</button>
-        `;
-        list.appendChild(item);
-      });
+      data.forEach((bookmark) => createBookmarkItem(bookmark));
     });
 }
 
-function removeBookmark(id) {
-  fetch(`${apiUrl}/${id}`, { method: "DELETE" })
-    .then(() => fetchBookmarks());
-}
+function createBookmarkItem(bookmark) {
+  const listItem = document.createElement("div");
+  listItem.className = "bookmark-item";
 
-function editBookmark(id, oldName, oldURL) {
-  const newName = prompt("Enter new bookmark name:", oldName);
-  const newURL = prompt("Enter new URL:", oldURL);
+  const info = document.createElement("div");
+  info.className = "bookmark-info";
+  info.textContent = `${bookmark.name} - ${bookmark.url}`;
 
-  if (!newName || !newURL) return;
+  const visitBtn = document.createElement("button");
+  visitBtn.textContent = "Visit";
+  visitBtn.className = "visit-btn";
+  visitBtn.onclick = () => window.open(bookmark.url,"_self");
 
-  const updated = {
-    name: newName,
-    url: newURL,
-    date: new Date().toLocaleDateString()
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edit";
+  editBtn.className = "edit-btn";
+  editBtn.onclick = () => {
+    document.getElementById("bookmarkName").value = bookmark.name;
+    document.getElementById("bookmarkURL").value = bookmark.url;
+    document.getElementById("addBtn").textContent = "Update Bookmark";
+    currentEditingId = bookmark._id;
   };
 
-  fetch(`${apiUrl}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updated)
-  }).then(() => fetchBookmarks());
+  const removeBtn = document.createElement("button");
+  removeBtn.textContent = "Remove";
+  removeBtn.className = "remove-btn";
+  removeBtn.onclick = () => {
+    fetch(`${apiUrl}/${bookmark._id}`, { method: "DELETE" })
+      .then(() => fetchBookmarks());
+  };
+
+  listItem.appendChild(info);
+  listItem.appendChild(visitBtn);
+  listItem.appendChild(editBtn);
+  listItem.appendChild(removeBtn);
+
+  document.getElementById("bookmarkList").appendChild(listItem);
+}
+
+function resetInputs() {
+  document.getElementById("bookmarkName").value = "";
+  document.getElementById("bookmarkURL").value = "";
 }
