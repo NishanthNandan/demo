@@ -1,0 +1,82 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #654ea3, #eaafc8);
+  background-color: #2980b9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: linear-gradient(to right, #fceabb, #f8b500);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 500px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  padding: 8px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-group button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.bookmark-item {
+  background: linear-gradient(to right, #c9d6ff, #e2e2e2);
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+}
+
+.bookmark-item p {
+  margin: 5px 0;
+}
+
+.bookmark-item button {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.visit-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  margin-right: 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+
+.edit-btn {
+  background-color: #f39c12;
+  color: white;
+}
+
+.remove-btn {
+  background-color: #e74c3c;
+  color: white;
+}
