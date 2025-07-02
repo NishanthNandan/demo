@@ -30,9 +30,10 @@ h1 {
 
 input {
   flex: 1;
-  padding: 8px;
+  padding: 15px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  width: 500px;
 }
 
 button {
@@ -83,4 +84,8 @@ background-color: whitesmoke;
 .remove-btn {
   background-color: #e74c3c;
   color: white;
+}
+#errorMessage{
+ color: rgb(255, 255, 255);
+
 }

@@ -1,45 +1,62 @@
-const apiUrl = "https://crudcrud.com/api/aa0893dde34f4e83a26770bcd859afdd/bookmarks";
+const apiUrl = "https://crudcrud.com/api/2377fa50bacb4981a0e81276bc5c7410/bookmarks";
 let currentEditingId = null;
 window.onload = fetchBookmarks;
 
-function addBookmark() {
+async function addBookmark() {
   const name = document.getElementById("bookmarkName").value.trim();
   const url = document.getElementById("bookmarkURL").value.trim();
-  if (!name || !url) return alert("Please fill both fields.");
+  const errorMsg = document.getElementById("errorMessage");
+  errorMsg.textContent = "";
+
+  if (!name || !url) {
+    errorMsg.textContent = "Please fill both fields.";
+    return;
+  }
+
+  if (!isValidURL(url)) {
+    errorMsg.textContent = "Invalid URL";
+    return;
+  }
+
   const bookmark = { name, url };
-  if (currentEditingId) {
-    fetch(`${apiUrl}/${currentEditingId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bookmark),
-    })
-      .then(() => {
-        currentEditingId = null;
-        document.getElementById("addBtn").textContent = "Add Bookmark";
-        resetInputs();
-        fetchBookmarks();
+
+  try {
+    if (currentEditingId) {
+   
+      await fetch(`${apiUrl}/${currentEditingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookmark),
       });
-  } else {
-    fetch(apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(bookmark),
-    })
-      .then(() => {
-        resetInputs();
-        fetchBookmarks();
+
+      currentEditingId = null;
+      document.getElementById("addBtn").textContent = "Add Bookmark";
+    } else {
+      // 
+      await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookmark),
       });
+    }
+
+    resetInputs();
+    fetchBookmarks();
+  } catch (error) {
+    errorMsg.textContent = `Failed to save bookmark: ${error.message}`;
   }
 }
 
-function fetchBookmarks() {
-  fetch(apiUrl)
-    .then((res) => res.json())
-    .then((data) => {
-      const list = document.getElementById("bookmarkList");
-      list.innerHTML = "";
-      data.forEach((bookmark) => createBookmarkItem(bookmark));
-    });
+async function fetchBookmarks() {
+  try {
+    const res = await fetch(apiUrl);
+    const data = await res.json();
+    const list = document.getElementById("bookmarkList");
+    list.innerHTML = "";
+    data.forEach((bookmark) => createBookmarkItem(bookmark));
+  } catch (error) {
+    document.getElementById("errorMessage").textContent = `Failed to fetch bookmarks: ${error.message}`;
+  }
 }
 
 function createBookmarkItem(bookmark) {
@@ -53,7 +70,7 @@ function createBookmarkItem(bookmark) {
   const visitBtn = document.createElement("button");
   visitBtn.textContent = "Visit";
   visitBtn.className = "visit-btn";
-  visitBtn.onclick = () => window.open(bookmark.url,"_self");
+  visitBtn.onclick = () => window.open(bookmark.url, "_self");
 
   const editBtn = document.createElement("button");
   editBtn.textContent = "Edit";
@@ -68,9 +85,21 @@ function createBookmarkItem(bookmark) {
   const removeBtn = document.createElement("button");
   removeBtn.textContent = "Remove";
   removeBtn.className = "remove-btn";
-  removeBtn.onclick = () => {
-    fetch(`${apiUrl}/${bookmark._id}`, { method: "DELETE" })
-      .then(() => fetchBookmarks());
+  removeBtn.onclick = async () => {
+    const errorMsg = document.getElementById("errorMessage");
+    errorMsg.textContent = "";
+
+    if (!navigator.onLine) {
+      errorMsg.textContent = "Browser is offline. Cannot remove bookmark.";
+      return;
+    }
+
+    try {
+      await fetch(`${apiUrl}/${bookmark._id}`, { method: "DELETE" });
+      fetchBookmarks();
+    } catch (error) {
+      errorMsg.textContent = `Failed to delete: ${error.message}`;
+    }
   };
 
   listItem.appendChild(info);
@@ -84,4 +113,13 @@ function createBookmarkItem(bookmark) {
 function resetInputs() {
   document.getElementById("bookmarkName").value = "";
   document.getElementById("bookmarkURL").value = "";
+}
+
+function isValidURL(string) {
+  try {
+    new URL(string);
+    return true;
+  } catch (_) {
+    return false;
+  }
 }

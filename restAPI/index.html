@@ -13,9 +13,16 @@
     <div class="input-group">
       <input type="text" id="bookmarkName" placeholder="Enter the bookmark name" />
       <input type="url" id="bookmarkURL" placeholder="Enter the URL" />
-      <button onclick="addBookmark()">Add Bookmark</button>
+      <!-- <button onclick="addBookmark()">Add Bookmark</button> -->
+      <button id="addBtn" onclick="addBookmark()">Add Bookmark</button>
+
     </div>
+    <p id="errorMessage"> </p>
+
     <div id="bookmarkList"></div>
+    <!-- <p id="errorMessage"></p> -->
+
+
   </div>
   <script src="app.js"></script>
 </body>
